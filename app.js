@@ -7,6 +7,7 @@ class DrumKit {
     this.hihatAudio = document.querySelector(".hihat-sound");
     this.index = 0;
     this.bpm = 300;
+    this.isPlaying = null;
   }
 
   activePad() {
@@ -36,9 +37,19 @@ class DrumKit {
 
   start() {
     const interval = (60 / this.bpm) * 1000;
-    setInterval(() => {
-      this.repeat();
-    }, interval);
+    if (!this.isPlaying) {
+      this.isPlaying = setInterval(() => {
+        this.repeat();
+      }, interval);
+    } else {
+      clearInterval(this.isPlaying);
+      this.isPlaying = null;
+    }
+  }
+
+  updateBtn() {
+    if (!this.isPlaying) this.playBtn.textContent = "Stop";
+    else this.playBtn.textContent = "Start";
   }
 }
 
@@ -51,4 +62,7 @@ drumKit.pads.forEach(pad => {
   });
 });
 
-drumKit.playBtn.addEventListener("click", () => drumKit.start());
+drumKit.playBtn.addEventListener("click", () => {
+  drumKit.start();
+  drumKit.updateBtn();
+});
